@@ -1,0 +1,85 @@
+---
+- name: Adiciona o repositorio do MariaDB
+  yum_repository:
+    description: "MariaDB"
+    name: "mariadb"
+    file: MariaDB
+    baseurl: http://yum.mariadb.org/10.2/centos7-amd64
+    gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+    gpgcheck: yes
+    owner: root
+    group: root
+    mode: 0644
+    state: present
+
+- name: Instala os pacotes do MariaDB 10 e dependencias
+  yum:
+    update_cache: yes
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - MariaDB-server
+    - MariaDB-client
+    - MySQL-python
+
+- name: Inicia o MariaDB
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Gera nova senha de root para o MariaDB
+  command: openssl rand -base64 32
+  register: mariadb_new_root_passwd
+  args:
+    creates: /root/.my.cnf
+
+- name: Remove usuarios anonimos
+  mysql_user:
+    name: ""
+    state: absent
+  when: mariadb_new_root_passwd.changed
+
+- name: Remove database test
+  mysql_db:
+    name: test
+    state: absent
+  when: mariadb_new_root_passwd.changed
+
+- name: Atualiza a senha do root do MariaDB
+  mysql_user:
+    name: root
+    host: "{{ item }}"
+    password: "{{ mariadb_new_root_passwd.stdout }}"
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+  when: mariadb_new_root_passwd.changed
+
+- name: Cria o arquivo my.cnf
+  template:
+    src: my.cnf.j2
+    dest: /root/.my.cnf
+  when: mariadb_new_root_passwd.changed
+
+- name: Exibe a nova senha de root para documentar
+  debug:
+    msg: "Nova senha de root do mariadb {{ mariadb_new_root_passwd.stdout }}"
+  when: mariadb_new_root_passwd.changed
+
+- name: Cria banco de dados no MariaDB
+  mysql_db:
+    name: "{{ item.database }}"
+    state: present
+  with_items: "{{ users }}"
+
+- name: Cria usuario e define permissoes no MariaDB
+  mysql_user:
+    name: "{{ item.username }}"
+    password: "{{ item.password }}"
+    host: "{{ item.allowed_host }}"
+    priv: "{{ item.database }}.*:ALL,GRANT"
+    state: present
+  with_items: "{{ users }}"
