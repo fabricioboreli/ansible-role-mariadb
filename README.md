@@ -62,6 +62,10 @@ Playbook de exemplo
 
 ```
 
+TODO
+-------
+- Suporte a SSL/TLS para comunicação entre cliente e servidor.
+
 Licença
 -------
 
