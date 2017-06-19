@@ -1,6 +1,2 @@
 ---
 # Variaveis
-- username: alice
-  password: AliceVeryLongPassword
-  database: alice
-  allowed_host: "%"
