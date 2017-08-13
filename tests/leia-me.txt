@@ -1,0 +1,62 @@
+### Vagrantfile para teste manual
+
+## Downloads:
+
+## Virtualbox
+https://www.virtualbox.org/wiki/Downloads
+
+## Vagrant
+https://www.vagrantup.com/downloads.html
+# Plugins do vagrant
+vagrant plugin install vagrant-share
+vagrant plugin install vagrant-vbguest
+
+
+# Arvore de diretorios e exemplo para realizar o teste:
+.
+├── playbook.yml                   # Playbook Ansible
+├── roles                          # Diretorio de roles, contem o role mariadb.
+│   ├── ansible-role-mariadb
+│   │   ├── defaults
+│   │   │   └── main.yml
+│   │   ├── handlers
+│   │   │   └── main.yml
+│   │   ├── meta
+│   │   │   └── main.yml
+│   │   ├── README.md
+│   │   ├── tasks
+│   │   │   ├── centos.yml
+│   │   │   ├── debian.yml
+│   │   │   └── main.yml
+│   │   ├── templates
+│   │   │   ├── my.cnf.j2
+│   │   │   └── my.cnf-jessie.j2
+│   │   └── VERSION
+├── sync_centos_7                  # Diretorio para sincronizar arquivos entre o host e a vm.
+├── sync_debian_jessie             # Diretorio para sincronizar arquivos entre o host e a vm.
+├── sync_debian_stretch            # Diretorio para sincronizar arquivos entre o host e a vm.
+└── Vagrantfile                    # Arquivo com as configurações do Vagrant
+
+
+### Comandos
+
+$ mkdir -p teste/{roles,sync_centos_7,sync_debian_jessie,sync_debian_stretch} && cd teste
+$ git clone https://github.com/fabricioboreli/ansible-role-mariadb.git roles/fabricioboreli.ansible-role-mariadb
+$ cp roles/fabricioboreli.ansible-role-mariadb/tests/* .
+$ vagrant up
+
+
+### Conectar no mariadb, deve ter o cliente do mariadb instalado localmente
+
+# debian 8 jessie
+$ mysql -u cacti -h 192.168.64.15 -psecret
+
+# debian 9 stretch
+$ mysql -u cacti -h 192.168.64.16 -psecret
+
+# centos 7
+$ mysql -u cacti -h 192.168.64.17 -psecret
+
+
+# Exibir banco de dados
+MariaDB [(none)]> show databases;

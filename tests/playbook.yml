@@ -1,0 +1,18 @@
+---
+- name: Instala MariaDB Server (Teste/deploy via Vagrant)
+  hosts: all
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: fabricioboreli.ansible-role-mariadb
+      users:
+        - username: "cacti"
+          password: "secret"
+          database: "cacti"
+          allowed_host: "%"
+  
+        - username: "zabbix"
+          password: "secret"
+          database: "zabbix"
+          allowed_host: "%"

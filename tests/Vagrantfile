@@ -1,0 +1,46 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # create debian_jessie node
+  config.vm.define :debian_jessie do |debian_jessie_config|
+      debian_jessie_config.vm.box = "debian/jessie64"
+      debian_jessie_config.vm.hostname = "debian-jessie"
+      debian_jessie_config.vm.network :private_network, ip: "192.168.64.15"
+      debian_jessie_config.vm.synced_folder "sync_debian_jessie", "/sync_host_data"
+      debian_jessie_config.vm.provider "virtualbox" do |vb|
+          vb.memory = "1024"
+      end
+      debian_jessie_config.vm.provision "ansible" do |ansible|
+          ansible.playbook = "playbook.yml"
+      end
+  end
+
+  # create debian_stretch node
+  config.vm.define :debian_stretch do |debian_stretch_config|
+      debian_stretch_config.vm.box = "debian/stretch64"
+      debian_stretch_config.vm.hostname = "debian-stretch"
+      debian_stretch_config.vm.network :private_network, ip: "192.168.64.16"
+      debian_stretch_config.vm.synced_folder "sync_debian_stretch", "/sync_host_data"
+      debian_stretch_config.vm.provider "virtualbox" do |vb|
+          vb.memory = "1024"
+      end
+      debian_stretch_config.vm.provision "ansible" do |ansible|
+          ansible.playbook = "playbook.yml"
+      end
+  end
+
+  # create centos_7 node
+  config.vm.define :centos_7 do |centos_7_config|
+      centos_7_config.vm.box = "centos/7"
+      centos_7_config.vm.hostname = "centos7"
+      centos_7_config.vm.network :private_network, ip: "192.168.64.17"
+      centos_7_config.vm.synced_folder "sync_centos_7", "/sync_host_data"
+      centos_7_config.vm.provider "virtualbox" do |vb|
+          vb.memory = "1024"
+      end
+      centos_7_config.vm.provision "ansible" do |ansible|
+          ansible.playbook = "playbook.yml"
+      end
+  end
+end
