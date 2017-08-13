@@ -1,0 +1,6 @@
+---
+- name: Reinicia o processo do MariaDB
+  service:
+    name: mysql
+    state: restarted
+

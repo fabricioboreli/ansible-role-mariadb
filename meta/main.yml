@@ -3,11 +3,15 @@ galaxy_info:
   description: System and Network Administrator
   company: Company
   license: MIT
-  min_ansible_version: 2.2
+  min_ansible_version: 2.3
   platforms:
   - name: CentOS
     versions:
     - 7
+  - name: Debian
+    versions:
+    - 8
+    - 9
   
   galaxy_tags: []
   

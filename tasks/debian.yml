@@ -1,0 +1,73 @@
+---
+- name: Instala dependencias
+  apt:
+    update_cache: yes
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - software-properties-common
+    - python-apt
+    - python3-apt
+    - python-mysqldb
+
+- name: Adiciona chave gpg do repositorio MariaDB (stretch)
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: F1656F24C74CD1D8
+    state: present
+  when: ansible_distribution_major_version == "9"
+
+- name: Adiciona o repositorio MariaDB (stretch)
+  apt_repository:
+    repo: deb http://mirror.ufscar.br/mariadb/repo/10.2/debian stretch main
+    state: present
+    filename: 'mariaDB'
+  when: ansible_distribution_major_version == "9"
+    
+- name: Adiciona o repositorio MariaDB src (stretch)
+  apt_repository:
+    repo: deb-src http://mirror.ufscar.br/mariadb/repo/10.2/debian stretch main
+    state: present
+    filename: 'mariaDB'
+  when: ansible_distribution_major_version == "9"
+  
+- name: Adiciona chave gpg do repositorio MariaDB (jessie)
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: cbcb082a1bb943db
+    state: present
+  when: ansible_distribution_major_version == "8"
+    
+- name: Adiciona o repositorio MariaDB (jessie)
+  apt_repository:
+    repo: deb http://mirror.ufscar.br/mariadb/repo/10.2/debian jessie main
+    state: present
+    filename: 'mariaDB'
+  when: ansible_distribution_major_version == "8"
+    
+- name: Adiciona o repositorio MariaDB src (jessie)
+  apt_repository:
+    repo: deb-src http://mirror.ufscar.br/mariadb/repo/10.2/debian jessie main
+    state: present
+    filename: 'mariaDB'
+  when: ansible_distribution_major_version == "8"
+
+- name: Instala os pacotes do MariaDB 10 e dependencias
+  apt:
+    update_cache: yes
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - mariadb-server
+    - mariadb-client
+
+- name: Copia o arquivo my.cnf do MariaDB (jessie)
+  template:
+    src: "my.cnf-jessie.j2"
+    dest: "/etc/mysql/my.cnf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reinicia o processo do MariaDB
+  when: ansible_distribution_major_version == "8"
+

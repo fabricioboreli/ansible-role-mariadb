@@ -1,26 +1,9 @@
 ---
-- name: Adiciona o repositorio do MariaDB
-  yum_repository:
-    description: "MariaDB"
-    name: "mariadb"
-    file: MariaDB
-    baseurl: http://yum.mariadb.org/10.2/centos7-amd64
-    gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-    gpgcheck: yes
-    owner: root
-    group: root
-    mode: 0644
-    state: present
-
-- name: Instala os pacotes do MariaDB 10 e dependencias
-  yum:
-    update_cache: yes
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - MariaDB-server
-    - MariaDB-client
-    - MySQL-python
+- include: debian.yml
+  when: ansible_distribution == 'Debian'
+    
+- include: centos.yml
+  when: ansible_distribution == 'CentOS'
 
 - name: Inicia o MariaDB
   service:

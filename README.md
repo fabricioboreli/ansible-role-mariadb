@@ -7,6 +7,8 @@ Usuários devem ser cadastrados no playbook que executa este role. Este role nã
 Requisitos
 ----------
 CentOS 7
+Debian 8
+Debian 9
 
 Variaveis do Role
 -----------------
@@ -42,13 +44,13 @@ Playbook de exemplo
 -------------------
 ```yaml
 ---
-- name: Instala MariaDB  Server 10
+- name: Instala MariaDB Server 10.2
   hosts: all
   become: true
   gather_facts: true
           
   roles:
-    - role: mariadb_server
+    - role: ansible-role-mariadb
       users:
         - username: alice
           password: aliceLongPassword
