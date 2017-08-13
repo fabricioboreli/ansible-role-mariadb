@@ -2,17 +2,17 @@ MariaDB Server
 ==============
 Ansible Role para instalar servidor MariaDB 10.2 (MySQL Fork) e cadastrar usuários e bancos de dados.
 
-Usuários devem ser cadastrados no playbook que executa este role. Este role não remove usuários ou os bancos de dados, apenas inclui.
+Usuários devem ser cadastrados no playbook que executa este role. Este role não remove os usuários ou os bancos de dados, apenas inclui.
 
 Requisitos
 ----------
-CentOS 7
-Debian 8
-Debian 9
+CentOS 7  
+Debian 8  
+Debian 9  
 
-Variaveis do Role
+Variáveis do Role
 -----------------
-O bloco de variavel _user_ contem as variaveis necessarias para criação dos usuários:
+O bloco de variável _user_ contem as variáveis necessárias para criação dos usuários:
 
 Nome do usuário:
 ```yaml
